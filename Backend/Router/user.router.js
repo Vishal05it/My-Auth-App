@@ -7,6 +7,14 @@ const userModel = require("../Schema/user.model");
 userRouter.post("/signup", async (req, res) => {
     try {
         let { email, password, name, age, bio, profilepic } = req.body
+        if (!email || !password) {
+            res.status(400).send({
+                message: "Please enter correct details.",
+                success: false,
+                status: 400
+            })
+            return;
+        }
         let userExist = await userModel.findOne({ email });
         if (userExist) {
             res.status(400).send({
@@ -67,8 +75,8 @@ userRouter.post("/login", async (req, res) => {
             })
             return;
         }
-        let sendUser = await userModel.findById(user._id).select("-password")
-        let token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY)
+        let sendUser = await userModel.findById(user._id).select("-password");
+        let token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: "1d" });
         res.status(200).send({
             message: "Logged in successfully!",
             success: true,

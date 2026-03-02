@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const userModel = require("../Schema/user.model");
+
 let verifyUser = async (req, res, next) => {
     try {
         const SECRET_KEY = process.env.SECRET_KEY;
@@ -25,10 +25,10 @@ let verifyUser = async (req, res, next) => {
         next();
     } catch (error) {
         console.log(error);
-        res.status(500).send({
+        res.status(401).send({
             message: "Token expired, Please login again!",
             success: false,
-            status: 500
+            status: 401
         })
         return;
     }
